@@ -1,0 +1,1578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JS Mastery Guide</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;700;800&display=swap');
+
+  :root {
+    --bg: #0d0d0f;
+    --bg2: #141417;
+    --bg3: #1c1c20;
+    --border: #2a2a30;
+    --text: #e8e8f0;
+    --muted: #888;
+    --accent: #7c6af7;
+    --accent2: #4ecdc4;
+    --accent3: #ff6b6b;
+    --accent4: #ffd93d;
+    --green: #6bcb77;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Syne', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* Sidebar */
+  #sidebar {
+    width: 260px;
+    min-width: 260px;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    padding: 1.5rem 0;
+  }
+
+  .sidebar-title {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    text-transform: uppercase;
+    padding: 0 1.25rem 1rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0.5rem;
+  }
+
+  .topic-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 0.65rem 1.25rem;
+    background: none;
+    border: none;
+    color: #999;
+    font-family: var(--sans);
+    font-size: 13px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s;
+    border-left: 2px solid transparent;
+  }
+
+  .topic-btn:hover { background: var(--bg3); color: var(--text); }
+  .topic-btn.active { background: var(--bg3); color: var(--text); border-left-color: var(--accent); }
+
+  .topic-num {
+    font-size: 11px;
+    color: var(--muted);
+    min-width: 18px;
+    font-family: var(--mono);
+  }
+
+  /* Main */
+  #main {
+    flex: 1;
+    overflow-y: auto;
+    padding: 2.5rem 3rem;
+    max-width: 900px;
+  }
+
+  .topic-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .topic-tag {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    background: rgba(124,106,247,0.12);
+    padding: 3px 10px;
+    border-radius: 4px;
+    margin-bottom: 0.75rem;
+    letter-spacing: 0.05em;
+  }
+
+  .topic-title {
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    margin-bottom: 0.5rem;
+  }
+
+  .topic-subtitle {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* Sections */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    font-family: var(--mono);
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .definition-box {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    font-size: 15px;
+    line-height: 1.7;
+    color: #c8c8d8;
+  }
+
+  /* Code blocks */
+  pre {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    overflow-x: auto;
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.7;
+    margin: 0.75rem 0;
+  }
+
+  code { font-family: var(--mono); font-size: 13px; }
+
+  .kw { color: #c792ea; }
+  .fn { color: #82aaff; }
+  .str { color: #c3e88d; }
+  .num { color: #f78c6c; }
+  .cm { color: #546e7a; font-style: italic; }
+  .key { color: #ffcb6b; }
+
+  /* Cards grid */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin: 0.75rem 0;
+  }
+
+  .card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+  }
+
+  .card-title {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--accent4);
+    font-family: var(--mono);
+  }
+
+  .card p { font-size: 13px; color: #aaa; line-height: 1.6; }
+
+  /* Q&A */
+  .qa-item {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 0.75rem;
+    overflow: hidden;
+  }
+
+  .qa-q {
+    padding: 0.9rem 1.25rem;
+    background: var(--bg3);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.15s;
+  }
+
+  .qa-q:hover { background: #22222a; }
+
+  .qa-q span { color: var(--accent); font-size: 16px; transition: transform 0.2s; }
+  .qa-q.open span { transform: rotate(45deg); }
+
+  .qa-a {
+    display: none;
+    padding: 1rem 1.25rem;
+    font-size: 13px;
+    color: #aaa;
+    line-height: 1.7;
+    border-top: 1px solid var(--border);
+    background: var(--bg2);
+  }
+
+  .qa-a.show { display: block; }
+
+  /* Tricky box */
+  .tricky {
+    background: rgba(255,107,107,0.06);
+    border: 1px solid rgba(255,107,107,0.25);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin: 0.75rem 0;
+  }
+
+  .tricky-title {
+    font-size: 12px;
+    font-family: var(--mono);
+    color: var(--accent3);
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.05em;
+  }
+
+  .tricky p, .tricky pre { font-size: 13px; margin: 0; }
+  .tricky pre { background: rgba(0,0,0,0.3); border-color: rgba(255,107,107,0.2); }
+
+  /* Visual diagram */
+  .diagram {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin: 0.75rem 0;
+    overflow-x: auto;
+  }
+
+  /* Tag badges */
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-family: var(--mono);
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin: 2px;
+  }
+
+  .badge-green { background: rgba(107,203,119,0.15); color: var(--green); }
+  .badge-red { background: rgba(255,107,107,0.15); color: var(--accent3); }
+  .badge-yellow { background: rgba(255,217,61,0.15); color: var(--accent4); }
+  .badge-blue { background: rgba(78,205,196,0.15); color: var(--accent2); }
+
+  /* Comparison table */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; padding: 0.6rem 1rem; background: var(--bg3); color: var(--accent2); font-size: 12px; letter-spacing: 0.05em; font-family: var(--mono); border-bottom: 1px solid var(--border); }
+  td { padding: 0.6rem 1rem; border-bottom: 1px solid var(--border); color: #bbb; line-height: 1.5; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  /* Flow diagram for async/defer, event bubbling */
+  .flow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 0.75rem 0; }
+  .flow-box {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    font-size: 12px;
+    font-family: var(--mono);
+    color: var(--text);
+  }
+  .flow-arrow { color: var(--muted); font-size: 16px; }
+  .flow-box.highlight { border-color: var(--accent); color: var(--accent); background: rgba(124,106,247,0.1); }
+  .flow-box.highlight2 { border-color: var(--accent2); color: var(--accent2); background: rgba(78,205,196,0.1); }
+  .flow-box.danger { border-color: var(--accent3); color: var(--accent3); background: rgba(255,107,107,0.1); }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  .tip {
+    background: rgba(78,205,196,0.08);
+    border: 1px solid rgba(78,205,196,0.2);
+    border-radius: 8px;
+    padding: 0.9rem 1.25rem;
+    font-size: 13px;
+    color: #aaa;
+    line-height: 1.6;
+    margin: 0.75rem 0;
+  }
+
+  .tip strong { color: var(--accent2); }
+
+  p { font-size: 14px; color: #bbb; line-height: 1.7; margin: 0.5rem 0; }
+  ul { padding-left: 1.25rem; }
+  li { font-size: 14px; color: #bbb; line-height: 1.8; }
+
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<nav id="sidebar">
+  <div class="sidebar-title">JS Mastery · 12 Topics</div>
+  <button class="topic-btn active" onclick="show(0)"><span class="topic-num">01</span>call, apply & bind</button>
+  <button class="topic-btn" onclick="show(1)"><span class="topic-num">02</span>Polyfill for bind()</button>
+  <button class="topic-btn" onclick="show(2)"><span class="topic-num">03</span>Function Currying</button>
+  <button class="topic-btn" onclick="show(3)"><span class="topic-num">04</span>async vs defer</button>
+  <button class="topic-btn" onclick="show(4)"><span class="topic-num">05</span>Event Bubbling & Capturing</button>
+  <button class="topic-btn" onclick="show(5)"><span class="topic-num">06</span>Event Delegation</button>
+  <button class="topic-btn" onclick="show(6)"><span class="topic-num">07</span>Prototype & Inheritance</button>
+  <button class="topic-btn" onclick="show(7)"><span class="topic-num">08</span>Debouncing</button>
+  <button class="topic-btn" onclick="show(8)"><span class="topic-num">09</span>Throttling</button>
+  <button class="topic-btn" onclick="show(9)"><span class="topic-num">10</span>Debouncing vs Throttling</button>
+  <button class="topic-btn" onclick="show(10)"><span class="topic-num">11</span>Local & Session Storage</button>
+  <button class="topic-btn" onclick="show(11)"><span class="topic-num">12</span>Thinking Recursively</button>
+</nav>
+
+<main id="main">
+
+<!-- TOPIC 0: call apply bind -->
+<div class="topic-page" id="page-0">
+  <div class="topic-header">
+    <div class="topic-tag">// method borrowing</div>
+    <h1 class="topic-title">call, apply & bind</h1>
+    <p class="topic-subtitle">Three ways to explicitly set <code>this</code> context for a function call.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Definition</div>
+    <div class="definition-box">
+      All functions in JS are objects. <strong>call</strong>, <strong>apply</strong>, and <strong>bind</strong> are methods on <code>Function.prototype</code> that let you borrow a function and call it with a custom <code>this</code> value — without changing the original function.
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Syntax & difference</div>
+    <table>
+      <tr><th>Method</th><th>Invokes?</th><th>Args format</th><th>Returns</th></tr>
+      <tr><td><code>fn.call(ctx, a, b)</code></td><td>Yes, immediately</td><td>Comma-separated</td><td>Result of fn</td></tr>
+      <tr><td><code>fn.apply(ctx, [a, b])</code></td><td>Yes, immediately</td><td>Array</td><td>Result of fn</td></tr>
+      <tr><td><code>fn.bind(ctx, a, b)</code></td><td>No</td><td>Comma-separated</td><td>New bound function</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Code example</div>
+<pre><code><span class="kw">const</span> <span class="key">person1</span> = { <span class="key">name</span>: <span class="str">'Akshay'</span>, <span class="key">age</span>: <span class="num">26</span> };
+<span class="kw">const</span> <span class="key">person2</span> = { <span class="key">name</span>: <span class="str">'Rahul'</span>, <span class="key">age</span>: <span class="num">28</span> };
+
+<span class="kw">function</span> <span class="fn">greet</span>(city, country) {
+  <span class="kw">return</span> <span class="str">`${this.name} from ${city}, ${country}`</span>;
+}
+
+<span class="cm">// call — immediate, args comma-separated</span>
+<span class="fn">greet</span>.call(person1, <span class="str">'Mumbai'</span>, <span class="str">'India'</span>);  <span class="cm">// "Akshay from Mumbai, India"</span>
+
+<span class="cm">// apply — immediate, args as array</span>
+<span class="fn">greet</span>.apply(person2, [<span class="str">'Delhi'</span>, <span class="str">'India'</span>]);  <span class="cm">// "Rahul from Delhi, India"</span>
+
+<span class="cm">// bind — returns a new function, call later</span>
+<span class="kw">const</span> <span class="key">greetAkshay</span> = <span class="fn">greet</span>.bind(person1, <span class="str">'Mumbai'</span>);
+<span class="fn">greetAkshay</span>(<span class="str">'India'</span>);  <span class="cm">// "Akshay from Mumbai, India"</span></code></pre>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Real-world use cases</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title">Method borrowing</div>
+        <p>Borrow array methods for array-like objects (arguments, NodeList)</p>
+        <pre style="margin-top:8px"><code><span class="kw">const</span> <span class="key">args</span> = [].slice.call(arguments);</code></pre>
+      </div>
+      <div class="card">
+        <div class="card-title">Event handler fix</div>
+        <p>Preserve <code>this</code> in callbacks</p>
+        <pre style="margin-top:8px"><code>btn.addEventListener(<span class="str">'click'</span>, handler.bind(<span class="kw">this</span>));</code></pre>
+      </div>
+      <div class="card">
+        <div class="card-title">Math.max on array</div>
+        <p>apply spreads array as arguments</p>
+        <pre style="margin-top:8px"><code>Math.max.apply(<span class="kw">null</span>, [<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>]); <span class="cm">// 3</span></code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Tricky scenarios</div>
+    <div class="tricky">
+      <div class="tricky-title">⚡ Tricky #1 — bind returns a new function, not the result</div>
+<pre><code><span class="kw">const</span> <span class="key">bound</span> = <span class="fn">greet</span>.bind(person1);
+<span class="fn">console</span>.log(<span class="kw">typeof</span> bound);  <span class="cm">// "function" — not a value!</span>
+<span class="fn">console</span>.log(<span class="fn">bound</span>());       <span class="cm">// invoke it to get the value</span></code></pre>
+    </div>
+    <div class="tricky">
+      <div class="tricky-title">⚡ Tricky #2 — bind on already-bound function</div>
+<pre><code><span class="kw">const</span> <span class="key">b1</span> = <span class="fn">greet</span>.bind(person1);
+<span class="kw">const</span> <span class="key">b2</span> = b1.bind(person2);  <span class="cm">// won't work!</span>
+<span class="fn">b2</span>();  <span class="cm">// still uses person1 — first bind wins</span></code></pre>
+    </div>
+    <div class="tricky">
+      <div class="tricky-title">⚡ Tricky #3 — null/undefined as context</div>
+<pre><code><span class="fn">greet</span>.call(<span class="kw">null</span>);  <span class="cm">// this === window (sloppy) or undefined (strict)</span></code></pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Interview Q&A</div>
+    <div class="qa-item"><div class="qa-q" onclick="toggleQa(this)">What is the difference between call and apply? <span>+</span></div>
+      <div class="qa-a">Both invoke the function immediately with a custom <code>this</code>. The only difference is how arguments are passed: <code>call</code> takes them comma-separated, <code>apply</code> takes them as an array. Remember: <strong>A for Array</strong> (apply = array).</div>
+    </div>
+    <div class="qa-item"><div class="qa-q" onclick="toggleQa(this)">When would you use bind over call? <span>+</span></div>
+      <div class="qa-a">Use <code>bind</code> when you need to store/pass a function for later execution with a fixed context — e.g., event listeners, setTimeout callbacks, or partial application. Use <code>call</code> when you want to invoke right away.</div>
+    </div>
+    <div class="qa-item"><div class="qa-q" onclick="toggleQa(this)">Can you use call/apply/bind on arrow functions? <span>+</span></div>
+      <div class="qa-a">No. Arrow functions don't have their own <code>this</code> — they capture it lexically. Calling <code>.call()</code> or <code>.bind()</code> on an arrow function won't change its <code>this</code>. It's silently ignored.</div>
+    </div>
+    <div class="qa-item"><div class="qa-q" onclick="toggleQa(this)">What is partial application with bind? <span>+</span></div>
+      <div class="qa-a">You can pre-fill some arguments when using bind. The bound function remembers those args and accepts the rest when called later.<br><br><code>const double = multiply.bind(null, 2);<br>double(5); // 10</code></div>
+    </div>
+  </div>
+</div>
+
+<!-- TOPIC 1: Polyfill for bind -->
+<div class="topic-page hidden" id="page-1">
+  <div class="topic-header">
+    <div class="topic-tag">// polyfill · advanced</div>
+    <h1 class="topic-title">Polyfill for bind()</h1>
+    <p class="topic-subtitle">Recreate <code>Function.prototype.bind</code> from scratch — a classic interview challenge.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Definition</div>
+    <div class="definition-box">
+      A <strong>polyfill</strong> is code that implements a feature for environments where it's missing. Writing a bind polyfill shows you deeply understand <code>this</code>, closures, and how the prototype chain works.
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">What bind must do</div>
+    <div class="cards-grid">
+      <div class="card"><div class="card-title">1. Return a function</div><p>Not execute immediately</p></div>
+      <div class="card"><div class="card-title">2. Fix this context</div><p>The returned fn uses the given ctx</p></div>
+      <div class="card"><div class="card-title">3. Pre-fill args</div><p>Support partial application</p></div>
+      <div class="card"><div class="card-title">4. Accept more args</div><p>When bound fn is called later</p></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Step-by-step polyfill</div>
+<pre><code><span class="cm">// Step 1: basic version</span>
+Function.prototype.<span class="fn">myBind</span> = <span class="kw">function</span>(context, ...args) {
+  <span class="kw">const</span> <span class="key">fn</span> = <span class="kw">this</span>;  <span class="cm">// 'this' is the original function</span>
+  <span class="kw">return function</span>(...newArgs) {
+    <span class="kw">return</span> fn.call(context, ...args, ...newArgs);
+  };
+};
+
+<span class="cm">// Usage</span>
+<span class="kw">const</span> <span class="key">person</span> = { <span class="key">name</span>: <span class="str">'Akshay'</span> };
+<span class="kw">function</span> <span class="fn">greet</span>(city) { <span class="kw">return</span> <span class="str">`${this.name} - ${city}`</span>; }
+
+<span class="kw">const</span> <span class="key">bound</span> = greet.<span class="fn">myBind</span>(person, <span class="str">'Mumbai'</span>);
+<span class="fn">bound</span>();  <span class="cm">// "Akshay - Mumbai" ✓</span></code></pre>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Complete polyfill (with new operator support)</div>
+<pre><code>Function.prototype.<span class="fn">myBind</span> = <span class="kw">function</span>(context, ...bindArgs) {
+  <span class="kw">if</span> (<span class="kw">typeof this</span> !== <span class="str">'function'</span>) {
+    <span class="kw">throw new</span> Error(<span class="str">'myBind must be called on a function'</span>);
+  }
+
+  <span class="kw">const</span> <span class="key">origFn</span> = <span class="kw">this</span>;
+
+  <span class="kw">function</span> <span class="fn">BoundFn</span>(...callArgs) {
+    <span class="cm">// If called with 'new', use the instance as context</span>
+    <span class="kw">return</span> origFn.call(
+      <span class="kw">this instanceof</span> BoundFn ? <span class="kw">this</span> : context,
+      ...bindArgs,
+      ...callArgs
+    );
+  }
+
+  <span class="cm">// Maintain prototype chain for new keyword support</span>
+  BoundFn.prototype = Object.create(origFn.prototype);
+  <span class="kw">return</span> BoundFn;
+};</code></pre>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Tricky scenarios</div>
+    <div class="tricky">
+      <div class="tricky-title">⚡ Tricky — partial application across two calls</div>
+<pre><code><span class="kw">function</span> <span class="fn">multiply</span>(a, b, c) { <span class="kw">return</span> a * b * c; }
+
+<span class="kw">const</span> <span class="key">step1</span> = multiply.<span class="fn">myBind</span>(<span class="kw">null</span>, <span class="num">2</span>);      <span class="cm">// a=2</span>
+<span class="kw">const</span> <span class="key">step2</span> = step1.<span class="fn">myBind</span>(<span class="kw">null</span>, <span class="num">3</span>);        <span class="cm">// a=2, b=3</span>
+<span class="fn">step2</span>(<span class="num">4</span>);  <span class="cm">// 2 * 3 * 4 = 24</span></code></pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Interview Q&A</div>
+    <div class="qa-item"><div class="qa-q" onclick="toggleQa(this)">Why do we store 'this' in a variable inside myBind? <span>+</span></div>
+      <div class="qa-a">Inside the returned inner function, <code>this</code> refers to the new function's own context (not the original function). By saving <code>const fn = this</code> before returning, we capture the original function via closure so we can call it later.</div>
+    </div>
+    <div class="qa-item"><div class="qa-q" onclick="toggleQa(this)">What is the instanceof BoundFn check for? <span>+</span></div>
+      <div class="qa-a">When you call a bound function with <code>new</code>, the newly created object should be used as <code>this</code>, not the bound context. The <code>instanceof</code> check detects if we're in a constructor call and handles it correctly.</div>
+    </div>
+    <div class="qa-item"><div class="qa-q" onclick="toggleQa(this)">What is ...args and ...newArgs (rest/spread)? <span>+</span></div>
+      <div class="qa-a"><code>...bindArgs</code> collects arguments passed at bind time. <code>...callArgs</code> collects arguments at call time. Spreading both (<code>...bindArgs, ...callArgs</code>) merges them, enabling partial application.</div>
+    </div>
+  </div>
+</div>
+
+<!-- TOPIC 2: Currying -->
+<div class="topic-page hidden" id="page-2">
+  <div class="topic-header">
+    <div class="topic-tag">// functional programming</div>
+    <h1 class="topic-title">Function Currying</h1>
+    <p class="topic-subtitle">Transform a function that takes multiple args into a chain of single-arg functions.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Definition</div>
+    <div class="definition-box">
+      Currying is translating <code>f(a, b, c)</code> → <code>f(a)(b)(c)</code>. Each call returns a new function that remembers the previous argument via closure — until all args are collected, then returns the result.
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Visual: normal vs curried</div>
+    <div class="diagram">
+      <div class="flow">
+        <div class="flow-box">add(1, 2, 3)</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box highlight">6</div>
+      </div>
+      <div style="margin-top:12px; font-size:12px; color:var(--muted); font-family:var(--mono); margin-bottom:8px">curried:</div>
+      <div class="flow">
+        <div class="flow-box">add(1)</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box highlight2">fn(b)</div>
+        <div class="flow-arrow">→ (2)</div>
+        <div class="flow-box highlight2">fn(c)</div>
+        <div class="flow-arrow">→ (3)</div>
+        <div class="flow-box highlight">6</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Manual curry</div>
+<pre><code><span class="cm">// Normal function</span>
+<span class="kw">function</span> <span class="fn">add</span>(a, b) { <span class="kw">return</span> a + b; }
+
+<span class="cm">// Manually curried</span>
+<span class="kw">function</span> <span class="fn">curriedAdd</span>(a) {
+  <span class="kw">return function</span>(b) {
+    <span class="kw">return</span> a + b;
+  };
+}
+
+<span class="fn">curriedAdd</span>(<span class="num">5</span>)(<span class="num">3</span>);  <span class="cm">// 8</span>
+<span class="kw">const</span> <span class="key">add5</span> = <span class="fn">curriedAdd</span>(<span class="num">5</span>);  <span class="cm">// reusable partial function</span>
+<span class="fn">add5</span>(<span class="num">10</span>); <span class="cm">// 15</span>
+<span class="fn">add5</span>(<span class="num">20</span>); <span class="cm">// 25</span></code></pre>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Generic curry utility</div>
+<pre><code><span class="kw">function</span> <span class="fn">curry</span>(fn) {
+  <span class="kw">return function</span> <span class="fn">curried</span>(...args) {
+    <span class="cm">// if enough args, call original; else return partial</span>
+    <span class="kw">if</span> (args.length >= fn.length) {
+      <span class="kw">return</span> fn.apply(<span class="kw">this</span>, args);
+    }
+    <span class="kw">return function</span>(...moreArgs) {
+      <span class="kw">return</span> <span class="fn">curried</span>.apply(<span class="kw">this</span>, args.concat(moreArgs));
+    };
+  };
+}
+
+<span class="kw">const</span> <span class="key">add</span> = <span class="fn">curry</span>((a, b, c) => a + b + c);
+<span class="fn">add</span>(<span class="num">1</span>)(<span class="num">2</span>)(<span class="num">3</span>);   <span class="cm">// 6</span>
+<span class="fn">add</span>(<span class="num">1</span>, <span class="num">2</span>)(<span class="num">3</span>);  <span class="cm">// 6 (mixed calling style)</span>
+<span class="fn">add</span>(<span class="num">1</span>)(<span class="num">2</span>, <span class="num">3</span>);  <span class="cm">// 6</span></code></pre>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Real-world use case</div>
+<pre><code><span class="cm">// Reusable validators</span>
+<span class="kw">const</span> <span class="key">hasMinLength</span> = (min) => (str) => str.length >= min;
+<span class="kw">const</span> <span class="key">isEmail</span> = hasMinLength(<span class="num">5</span>);
+<span class="fn">isEmail</span>(<span class="str">'hi@x.io'</span>); <span class="cm">// true</span>
+
+<span class="cm">// Logging with context</span>
+<span class="kw">const</span> <span class="key">log</span> = (level) => (module) => (msg) =>
+  <span class="fn">console</span>.log(<span class="str">`[${level}] [${module}] ${msg}`</span>);
+
+<span class="kw">const</span> <span class="key">warn</span> = <span class="fn">log</span>(<span class="str">'WARN'</span>)(<span class="str">'Auth'</span>);
+<span class="fn">warn</span>(<span class="str">'Token expired'</span>); <span class="cm">// [WARN] [Auth] Token expired</span></code></pre>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Tricky scenarios</div>
+    <div class="tricky">
+      <div class="tricky-title">⚡ Tricky — fn.length only counts non-default params</div>
+<pre><code><span class="kw">function</span> <span class="fn">f</span>(a, b = <span class="num">10</span>) {}
+f.length; <span class="cm">// 1 — default params not counted!</span>
+<span class="cm">// Generic curry won't work correctly here</span></code></pre>
+    </div>
+    <div class="tricky">
+      <div class="tricky-title">⚡ Tricky — infinite curry</div>
+<pre><code><span class="cm">// sum(1)(2)(3)() — call with no args to terminate</span>
+<span class="kw">function</span> <span class="fn">sum</span>(a) {
+  <span class="kw">return function</span>(b) {
+    <span class="kw">if</span> (b === <span class="kw">undefined</span>) <span class="kw">return</span> a;
+    <span class="kw">return</span> <span class="fn">sum</span>(a + b);
+  };
+}
+<span class="fn">sum</span>(<span class="num">1</span>)(<span class="num">2</span>)(<span class="num">3</span>)(); <span class="cm">// 6</span></code></pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Interview Q&A</div>
+    <div class="qa-item"><div class="qa-q" onclick="toggleQa(this)">What is the difference between currying and partial application? <span>+</span></div>
+      <div class="qa-a"><strong>Currying</strong> always breaks into single-argument functions: f(a)(b)(c). <strong>Partial application</strong> fixes some arguments and returns a function for the rest — it can take multiple args at once: f(a, b) returning g(c). Currying is a specific form of partial application.</div>
+    </div>
+    <div class="qa-item"><div class="qa-q" onclick="toggleQa(this)">Why would you use currying in real code? <span>+</span></div>
+      <div class="qa-a">1) Create reusable specialized functions (add5, double). 2) Function composition — curry makes it easy to pipe single-arg functions. 3) Lazy evaluation — delay computation until all args are ready. 4) Cleaner code in functional programming patterns.</div>
+    </div>
+    <div class="qa-item"><div class="qa-q" onclick="toggleQa(this)">How does the generic curry function know when to stop? <span>+</span></div>
+      <div class="qa-a">It compares <code>args.length</code> with <code>fn.length</code> (the expected arity of the original function). When enough args have accumulated, it calls the original function. Until then it keeps collecting args via closures.</div>
+    </div>
+  </div>
+</div>
+
+<!-- TOPIC 3: async vs defer -->
+<div class="topic-page hidden" id="page-3">
+  <div class="topic-header">
+    <div class="topic-tag">// HTML · script loading</div>
+    <h1 class="topic-title">async vs defer</h1>
+    <p class="topic-subtitle">Control when scripts are fetched and executed relative to HTML parsing.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-label">The problem</div>
+    <div class="definition-box">
+      When the browser encounters a <code>&lt;script&gt;</code> tag, it pauses HTML parsing to fetch + execute the script. This blocks rendering. <code>async</code> and <code>defer</code> are attributes that change this blocking behavior.
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Visual timeline comparison</div>
+    <div class="diagram">
+      <div style="font-size:12px; font-family:var(--mono); color:var(--muted); margin-bottom:12px">Legend: <span class="badge badge-blue">HTML parse</span> <span class="badge badge-yellow">Script fetch</span> <span class="badge badge-red">Script execute</span></div>
+      
+      <div style="margin-bottom:16px">
+        <div style="font-size:12px; color:var(--muted); font-family:var(--mono); margin-bottom:6px">Normal &lt;script&gt;:</div>
+        <div class="flow">
+          <div class="flow-box highlight2">HTML parse</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-box" style="color:var(--accent4); border-color:var(--accent4); background:rgba(255,217,61,0.08)">PAUSE fetch</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-box danger">execute</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-box highlight2">resume HTML</div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:16px">
+        <div style="font-size:12px; color:var(--muted); font-family:var(--mono); margin-bottom:6px">async:</div>
+        <div class="flow">
+          <div class="flow-box highlight2">HTML parse</div>
+          <div class="flow-arrow">+</div>
+          <div class="flow-box" style="color:var(--accent4); border-color:var(--accent4); background:rgba(255,217,61,0.08)">fetch (parallel)</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-box danger">execute (pauses parse)</div>
+        </div>
+      </div>
+
+      <div>
+        <div style="font-size:12px; color:var(--muted); font-family:var(--mono); margin-bottom:6px">defer:</div>
+        <div class="flow">
+          <div class="flow-box highlight2">HTML parse</div>
+          <div class="flow-arrow">+</div>
+          <div class="flow-box" style="color:var(--accent4); border-color:var(--accent4); background:rgba(255,217,61,0.08)">fetch (parallel)</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-box highlight2">HTML complete</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-box danger">execute (in order)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Key differences</div>
+    <table>
+      <tr><th>Property</th><th>Normal</th><th>async</th><th>defer</th></tr>
+      <tr><td>Fetch</td><td>Blocks HTML</td><td>Parallel</td><td>Parallel</td></tr>
+      <tr><td>Execute when</td><td>Immediately</td><td>When fetched</td><td>After HTML parsed</td></tr>
+      <tr><td>Execution order</td><td>In order</td><td>⚠️ No order</td><td>In order</td></tr>
+      <tr><td>Blocks parsing</td><td>Yes</td><td>During execute</td><td>No</td></tr>
+      <tr><td>DOMContentLoaded</td><td>After</td><td>Before/after</td><td>Before</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Code</div>
+<pre><code><span class="cm">&lt;!-- Blocks everything - avoid for large scripts --&gt;</span>
+&lt;script src=<span class="str">"app.js"</span>&gt;&lt;/script&gt;
+
+<span class="cm">&lt;!-- Good for independent scripts (analytics, ads) --&gt;</span>
+&lt;script async src=<span class="str">"analytics.js"</span>&gt;&lt;/script&gt;
+
+<span class="cm">&lt;!-- Good for scripts that need full DOM --&gt;</span>
+&lt;script defer src=<span class="str">"main.js"</span>&gt;&lt;/script&gt;</code></pre>
+  </div>
+
+  <div class="section">
+    <div class="section-label">When to use what</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title">Use async for</div>
+        <p>Independent scripts that don't depend on DOM or other scripts: Google Analytics, ads, chat widgets</p>
+      </div>
+      <div class="card">
+        <div class="card-title">Use defer for</div>
+        <p>Scripts that need the full DOM, or scripts that depend on each other (order is preserved)</p>
+      </div>
+      <div class="card">
+        <div class="card-title">Neither (inline)</div>
+        <p>Critical above-fold code. Use normal script in &lt;head&gt; only for tiny critical scripts</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Interview Q&A</div>
+    <div class="qa-item"><div class="qa-q" onclick="toggleQa(this)">Which is better — async or defer? <span>+</span></div>
+      <div class="qa-a">Neither is universally better. <code>defer</code> is better for most app scripts because it preserves execution order and runs after full HTML parse. <code>async</code> is better for truly independent third-party scripts. If the order doesn't matter and the script is self-contained, async is fine.</div>
+    </div>
+    <div class="qa-item"><div class="qa-q" onclick="toggleQa(this)">Does async/defer work for inline scripts? <span>+</span></div>
+      <div class="qa-a">No! async and defer only apply to external scripts with a <code>src</code> attribute. Inline <code>&lt;script&gt;</code> blocks always execute synchronously during parsing.</div>
+    </div>
+    <div class="qa-item"><div class="qa-q" onclick="toggleQa(this)">What happens if you use both async and defer? <span>+</span></div>
+      <div class="qa-a"><code>async</code> takes precedence in modern browsers. This combination exists for legacy IE fallback — old IE didn't support async, so it'd fall back to defer behavior.</div>
+    </div>
+    <div class="qa-item"><div class="qa-q" onclick="toggleQa(this)">Ola interview question: Why does my JS run before DOM is ready? <span>+</span></div>
+      <div class="qa-a">The script is in the &lt;head&gt; without defer/async, or before the DOM elements it needs. Fix: move script to end of &lt;body&gt;, use <code>defer</code>, or wrap code in <code>DOMContentLoaded</code> event listener.</div>
+    </div>
+  </div>
+</div>
+
+<!-- TOPIC 4: Event Bubbling & Capturing -->
+<div class="topic-page hidden" id="page-4">
+  <div class="topic-header">
+    <div class="topic-tag">// DOM events</div>
+    <h1 class="topic-title">Event Bubbling & Capturing</h1>
+    <p class="topic-subtitle">How events travel through the DOM tree — downward (capture) then upward (bubble).</p>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Definition</div>
+    <div class="definition-box">
+      When an event fires on an element, it travels in 3 phases:<br>
+      <strong>1. Capture phase</strong> — from window down to target<br>
+      <strong>2. Target phase</strong> — at the element itself<br>
+      <strong>3. Bubble phase</strong> — from target back up to window
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Visual: DOM event flow</div>
+    <div class="diagram">
+      <div style="display:flex; flex-direction:column; align-items:center; gap:4px; font-family:var(--mono); font-size:12px;">
+        <div style="display:flex; align-items:center; gap:8px; width:100%; justify-content:center;">
+          <span style="color:var(--accent); font-size:10px">▼ CAPTURE</span>
+          <span style="color:var(--muted); font-size:10px; flex:1; text-align:center;"></span>
+          <span style="color:var(--accent2); font-size:10px">▲ BUBBLE</span>
+        </div>
+        <div style="padding:10px 24px; border:1px solid #444; border-radius:6px; background:#1a1a20; width:280px; text-align:center;">window</div>
+        <div style="width:2px; height:16px; background:var(--border);"></div>
+        <div style="padding:10px 24px; border:1px solid #444; border-radius:6px; background:#1a1a20; width:240px; text-align:center;">document</div>
+        <div style="width:2px; height:16px; background:var(--border);"></div>
+        <div style="padding:10px 24px; border:1px solid #444; border-radius:6px; background:#1a1a20; width:200px; text-align:center;">&lt;html&gt;</div>
+        <div style="width:2px; height:16px; background:var(--border);"></div>
+        <div style="padding:10px 24px; border:1px solid #444; border-radius:6px; background:#1a1a20; width:160px; text-align:center;">&lt;body&gt;</div>
+        <div style="width:2px; height:16px; background:var(--border);"></div>
+        <div style="padding:10px 24px; border:1px solid var(--accent3); border-radius:6px; background:rgba(255,107,107,0.1); width:120px; text-align:center; color:var(--accent3);">&lt;button&gt; 🎯</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Code example</div>
+<pre><code>&lt;div id=<span class="str">"grandparent"</span>&gt;
+  &lt;div id=<span class="str">"parent"</span>&gt;
+    &lt;button id=<span class="str">"child"</span>&gt;Click&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+<span class="cm">// Bubbling (default — 3rd arg false/omitted)</span>
+document.<span class="fn">getElementById</span>(<span class="str">'grandparent'</span>)
+  .addEventListener(<span class="str">'click'</span>, () => <span class="fn">console</span>.log(<span class="str">'GP bubble'</span>));
+
+document.<span class="fn">getElementById</span>(<span class="str">'parent'</span>)
+  .addEventListener(<span class="str">'click'</span>, () => <span class="fn">console</span>.log(<span class="str">'Parent bubble'</span>));
+
+<span class="cm">// Clicking button logs:</span>
+<span class="cm">// "Parent bubble" → "GP bubble" (bubbles UP)</span>
+
+<span class="cm">// Capturing (3rd arg = true)</span>
+document.<span class="fn">getElementById</span>(<span class="str">'grandparent'</span>)
+  .addEventListener(<span class="str">'click'</span>, () => <span class="fn">console</span>.log(<span class="str">'GP capture'</span>), <span class="kw">true</span>);
+<span class="cm">// "GP capture" fires FIRST (coming down)</span></code></pre>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Stopping propagation</div>
+<pre><code>btn.addEventListener(<span class="str">'click'</span>, (e) => {
+  e.<span class="fn">stopPropagation</span>();  <span class="cm">// stops bubbling/capturing</span>
+  e.<span class="fn">stopImmediatePropagation</span>();  <span class="cm">// also stops other listeners on same element</span>
+  e.<span class="fn">preventDefault</span>();  <span class="cm">// prevents default browser action (different!)</span>
+});</code></pre>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Tricky scenarios</div>
+    <div class="tricky">
+      <div class="tricky-title">⚡ Tricky — focus/blur don't bubble</div>
+      <p>Events like <code>focus</code>, <code>blur</code>, <code>mouseenter</code>, and <code>mouseleave</code> do NOT bubble. Use <code>focusin</code>/<code>focusout</code> or <code>mouseover</code>/<code>mouseout</code> which do bubble.</p>
+    </div>
+    <div class="tricky">
+      <div class="tricky-title">⚡ Tricky — order when both capture and bubble listeners exist</div>
+<pre><code><span class="cm">// Capture listeners fire first (top-down), then bubble (bottom-up)</span>
+<span class="cm">// Output for click on child:</span>
+<span class="cm">// 1. GP capture → 2. Parent capture → 3. Child (both)</span>
+<span class="cm">// 4. Parent bubble → 5. GP bubble</span></code></pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Interview Q&A</div>
+    <div class="qa-item"><div class="qa-q" onclick="toggleQa(this)">What is event bubbling? <span>+</span></div>
+      <div class="qa-a">After an event fires on an element, it propagates upward through ancestors. A click on a button also triggers click listeners on its parent div, then body, then document, then window — unless stopped.</div>
+    </div>
+    <div class="qa-item"><div class="qa-q" onclick="toggleQa(this)">What's the difference between stopPropagation and preventDefault? <span>+</span></div>
+      <div class="qa-a"><code>stopPropagation</code> stops the event from traveling to parent/ancestor elements. <code>preventDefault</code> stops the browser's default action (e.g., following a link, submitting a form). They're independent — one doesn't do the other.</div>
+    </div>
+    <div class="qa-item"><div class="qa-q" onclick="toggleQa(this)">Oyo interview: How would you add one listener for all buttons in the page? <span>+</span></div>
+      <div class="qa-a">Use event delegation — add one listener to a common ancestor (e.g., document.body) and check <code>event.target</code>. This leverages bubbling. That's the next topic!</div>
+    </div>
+  </div>
+</div>
+
+<!-- TOPIC 5: Event Delegation -->
+<div class="topic-page hidden" id="page-5">
+  <div class="topic-header">
+    <div class="topic-tag">// DOM performance pattern</div>
+    <h1 class="topic-title">Event Delegation</h1>
+    <p class="topic-subtitle">Attach one listener to a parent instead of many listeners on each child.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Definition</div>
+    <div class="definition-box">
+      Event delegation uses <strong>event bubbling</strong> to handle events on dynamically added or many child elements with a single listener on a parent. When a child is clicked, the event bubbles up and the parent listener checks <code>event.target</code> to identify which child was clicked.
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Without vs with delegation</div>
+<pre><code><span class="cm">// ❌ BAD: 1000 listeners for 1000 list items</span>
+document.<span class="fn">querySelectorAll</span>(<span class="str">'li'</span>).forEach(li => {
+  li.addEventListener(<span class="str">'click'</span>, handler);
+});
+
+<span class="cm">// ✅ GOOD: 1 listener on parent</span>
+document.<span class="fn">getElementById</span>(<span class="str">'list'</span>).addEventListener(<span class="str">'click'</span>, (e) => {
+  <span class="kw">if</span> (e.target.tagName === <span class="str">'LI'</span>) {
+    <span class="fn">console</span>.log(<span class="str">'Clicked:'</span>, e.target.textContent);
+  }
+});</code></pre>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Real-world: dynamic list</div>
+<pre><code>&lt;ul id=<span class="str">"todo-list"</span>&gt;&lt;/ul&gt;
+&lt;button onclick=<span class="str">"addItem()"</span>&gt;Add Item&lt;/button&gt;
+
+<span class="cm">// ✅ Works for dynamically added items!</span>
+document.<span class="fn">getElementById</span>(<span class="str">'todo-list'</span>).addEventListener(<span class="str">'click'</span>, (e) => {
+  <span class="cm">// Check for delete button inside each item</span>
+  <span class="kw">if</span> (e.target.classList.contains(<span class="str">'delete-btn'</span>)) {
+    e.target.closest(<span class="str">'li'</span>).remove();
+  }
+  <span class="kw">if</span> (e.target.tagName === <span class="str">'LI'</span>) {
+    e.target.classList.toggle(<span class="str">'done'</span>);
+  }
+});</code></pre>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Benefits</div>
+    <div class="cards-grid">
+      <div class="card"><div class="card-title">Memory</div><p>1 listener vs N listeners — much less memory usage</p></div>
+      <div class="card"><div class="card-title">Dynamic elements</div><p>Works for elements added after page load — no need to re-bind</p></div>
+      <div class="card"><div class="card-title">Simpler code</div><p>One place to handle all similar interactions</p></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Tricky scenarios</div>
+    <div class="tricky">
+      <div class="tricky-title">⚡ Tricky — clicking a child of the target element</div>
+<pre><code><span class="cm">// &lt;li&gt;&lt;span&gt;Text&lt;/span&gt;&lt;/li&gt;</span>
+<span class="cm">// Clicking span: e.target = span, NOT li!</span>
+<span class="cm">// Use closest() to handle this:</span>
+<span class="kw">const</span> <span class="key">li</span> = e.target.<span class="fn">closest</span>(<span class="str">'li'</span>);
+<span class="kw">if</span> (!li) <span class="kw">return</span>;  <span class="cm">// clicked outside any li</span></code></pre>
+    </div>
+    <div class="tricky">
+      <div class="tricky-title">⚡ Tricky — when NOT to use delegation</div>
+      <p>Don't delegate to document/window for performance-sensitive events like mousemove or scroll. Also avoid delegation when stopPropagation is used inside the container.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Interview Q&A</div>
+    <div class="qa-item"><div class="qa-q" onclick="toggleQa(this)">What is event delegation and why use it? <span>+</span></div>
+      <div class="qa-a">Attaching a single event listener to a parent element to manage events from all children. Benefits: fewer listeners (better performance/memory), works for dynamically added elements, cleaner code.</div>
+    </div>
+    <div class="qa-item"><div class="qa-q" onclick="toggleQa(this)">What is event.target vs event.currentTarget? <span>+</span></div>
+      <div class="qa-a"><code>event.target</code> is the element that was actually clicked (the source). <code>event.currentTarget</code> is the element with the listener attached. In delegation, currentTarget is the parent; target is the child that was clicked.</div>
+    </div>
+    <div class="qa-item"><div class="qa-q" onclick="toggleQa(this)">UI Interview: Build a menu where each item can be clicked <span>+</span></div>
+      <div class="qa-a">Use one click listener on the ul/nav container, check e.target.dataset.action or e.target.id to route to the right handler. This is more scalable than adding listeners to each menu item.</div>
+    </div>
+  </div>
+</div>
+
+<!-- TOPIC 6: Prototype -->
+<div class="topic-page hidden" id="page-6">
+  <div class="topic-header">
+    <div class="topic-tag">// OOP · inheritance</div>
+    <h1 class="topic-title">Prototype & Prototypal Inheritance</h1>
+    <p class="topic-subtitle">How JavaScript objects inherit properties through the prototype chain.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Definition</div>
+    <div class="definition-box">
+      Every JavaScript object has a hidden <code>[[Prototype]]</code> property pointing to another object (its prototype). When you access a property, JS first looks on the object itself, then walks up the prototype chain until found or reaches <code>null</code>.
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Prototype chain visual</div>
+    <div class="diagram">
+      <div style="font-family:var(--mono); font-size:12px;">
+        <div class="flow" style="flex-direction:column; align-items:flex-start; gap:8px;">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div class="flow-box highlight" style="min-width:160px">myDog { name:'Rex' }</div>
+            <div class="flow-arrow">→ __proto__</div>
+            <div class="flow-box highlight2" style="min-width:180px">Dog.prototype { bark() }</div>
+          </div>
+          <div style="margin-left:200px; display:flex; align-items:center; gap:12px;">
+            <div class="flow-arrow" style="margin-left:8px">→ __proto__</div>
+            <div class="flow-box" style="min-width:200px">Object.prototype { toString() }</div>
+          </div>
+          <div style="margin-left:350px; display:flex; align-items:center; gap:12px;">
+            <div class="flow-arrow" style="margin-left:8px">→ __proto__</div>
+            <div class="flow-box danger">null (end)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Code example</div>
+<pre><code><span class="kw">function</span> <span class="fn">Animal</span>(name) {
+  <span class="kw">this</span>.name = name;
+}
+Animal.prototype.<span class="fn">speak</span> = <span class="kw">function</span>() {
+  <span class="kw">return</span> <span class="str">`${this.name} makes a sound`</span>;
+};
+
+<span class="kw">function</span> <span class="fn">Dog</span>(name, breed) {
+  Animal.call(<span class="kw">this</span>, name);  <span class="cm">// inherit properties</span>
+  <span class="kw">this</span>.breed = breed;
+}
+
+<span class="cm">// Set up prototype chain</span>
+Dog.prototype = Object.create(Animal.prototype);
+Dog.prototype.constructor = Dog;
+
+Dog.prototype.<span class="fn">bark</span> = <span class="kw">function</span>() { <span class="kw">return</span> <span class="str">'Woof!'</span>; };
+
+<span class="kw">const</span> <span class="key">d</span> = <span class="kw">new</span> <span class="fn">Dog</span>(<span class="str">'Rex'</span>, <span class="str">'Lab'</span>);
+d.<span class="fn">bark</span>();   <span class="cm">// 'Woof!' — own method</span>
+d.<span class="fn">speak</span>();  <span class="cm">// 'Rex makes a sound' — inherited!</span>
+d <span class="kw">instanceof</span> Dog;    <span class="cm">// true</span>
+d <span class="kw">instanceof</span> Animal; <span class="cm">// true</span></code></pre>
+  </div>
+
+  <div class="section">
+    <div class="section-label">ES6 Class syntax (same thing under the hood)</div>
+<pre><code><span class="kw">class</span> <span class="fn">Animal</span> {
+  <span class="fn">constructor</span>(name) { <span class="kw">this</span>.name = name; }
+  <span class="fn">speak</span>() { <span class="kw">return</span> <span class="str">`${this.name} makes a sound`</span>; }
+}
+
+<span class="kw">class</span> <span class="fn">Dog</span> <span class="kw">extends</span> Animal {
+  <span class="fn">constructor</span>(name, breed) {
+    <span class="kw">super</span>(name);  <span class="cm">// calls Animal's constructor</span>
+    <span class="kw">this</span>.breed = breed;
+  }
+  <span class="fn">bark</span>() { <span class="kw">return</span> <span class="str">'Woof!'</span>; }
+}
+
+<span class="cm">// Classes are syntactic sugar over prototypes!</span></code></pre>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Tricky scenarios</div>
+    <div class="tricky">
+      <div class="tricky-title">⚡ Tricky — modifying prototype affects ALL instances</div>
+<pre><code>Array.prototype.<span class="fn">sum</span> = <span class="kw">function</span>() {
+  <span class="kw">return this</span>.<span class="fn">reduce</span>((a, b) => a + b, <span class="num">0</span>);
+};
+[<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>].<span class="fn">sum</span>(); <span class="cm">// 6 — but DON'T do this in prod!</span>
+<span class="cm">// Pollutes built-in prototypes — can break libraries</span></code></pre>
+    </div>
+    <div class="tricky">
+      <div class="tricky-title">⚡ Tricky — hasOwnProperty vs 'in'</div>
+<pre><code><span class="kw">const</span> obj = Object.create({ inherited: <span class="kw">true</span> });
+obj.own = <span class="kw">true</span>;
+
+<span class="str">'own'</span> <span class="kw">in</span> obj;                      <span class="cm">// true</span>
+<span class="str">'inherited'</span> <span class="kw">in</span> obj;               <span class="cm">// true</span>
+obj.hasOwnProperty(<span class="str">'own'</span>);        <span class="cm">// true</span>
+obj.hasOwnProperty(<span class="str">'inherited'</span>);  <span class="cm">// false!</span></code></pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Interview Q&A</div>
+    <div class="qa-item"><div class="qa-q" onclick="toggleQa(this)">What is the difference between __proto__ and prototype? <span>+</span></div>
+      <div class="qa-a"><code>prototype</code> is a property on constructor functions used to set up inheritance. <code>__proto__</code> (or Object.getPrototypeOf) is the actual link on an instance pointing to the constructor's prototype. So <code>dog.__proto__ === Dog.prototype</code> is true.</div>
+    </div>
+    <div class="qa-item"><div class="qa-q" onclick="toggleQa(this)">What does Object.create() do? <span>+</span></div>
+      <div class="qa-a">Creates a new object with the specified object as its prototype. <code>Object.create(Animal.prototype)</code> creates an object whose __proto__ is Animal.prototype — enabling prototype chain inheritance without calling the constructor.</div>
+    </div>
+    <div class="qa-item"><div class="qa-q" onclick="toggleQa(this)">Are ES6 classes different from prototype-based inheritance? <span>+</span></div>
+      <div class="qa-a">No — classes are syntactic sugar. Under the hood, class syntax still uses prototypes. The <code>extends</code> keyword sets up the prototype chain, and <code>super()</code> calls the parent constructor. You can verify: <code>typeof Dog === 'function'</code> is still true.</div>
+    </div>
+  </div>
+</div>
+
+<!-- TOPIC 7: Debouncing -->
+<div class="topic-page hidden" id="page-7">
+  <div class="topic-header">
+    <div class="topic-tag">// performance · optimization</div>
+    <h1 class="topic-title">Debouncing</h1>
+    <p class="topic-subtitle">Delay execution until after a quiet period — execute only once after the last call.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Definition</div>
+    <div class="definition-box">
+      Debouncing ensures a function is only called after it has stopped being invoked for a specified amount of time. If the function is called repeatedly, only the last call (after the delay) executes.
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Visual timeline</div>
+    <div class="diagram">
+      <div style="font-family:var(--mono); font-size:12px; color:var(--muted); margin-bottom:12px">User typing: each keystroke fires an event</div>
+      <div class="flow" style="flex-wrap:nowrap; overflow-x:auto;">
+        <div class="flow-box danger" style="font-size:10px">key</div>
+        <div class="flow-box danger" style="font-size:10px">key</div>
+        <div class="flow-box danger" style="font-size:10px">key</div>
+        <div class="flow-box danger" style="font-size:10px">key</div>
+        <div style="color:var(--muted); font-size:10px; padding:4px">... wait 500ms ...</div>
+        <div class="flow-box highlight" style="font-size:10px">API CALL ✓</div>
+      </div>
+      <p style="font-size:12px; color:var(--muted); margin-top:8px">Without debounce: 4 API calls. With debounce: 1 API call.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Implementation</div>
+<pre><code><span class="kw">function</span> <span class="fn">debounce</span>(fn, delay) {
+  <span class="kw">let</span> <span class="key">timer</span>;
+
+  <span class="kw">return function</span>(...args) {
+    <span class="fn">clearTimeout</span>(timer);  <span class="cm">// reset timer on every call</span>
+    timer = <span class="fn">setTimeout</span>(() => {
+      fn.apply(<span class="kw">this</span>, args);
+    }, delay);
+  };
+}
+
+<span class="cm">// Usage</span>
+<span class="kw">const</span> <span class="key">search</span> = <span class="fn">debounce</span>((query) => {
+  <span class="fn">fetchResults</span>(query);  <span class="cm">// API call</span>
+}, <span class="num">500</span>);
+
+input.addEventListener(<span class="str">'input'</span>, (e) => <span class="fn">search</span>(e.target.value));</code></pre>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Leading vs trailing debounce</div>
+<pre><code><span class="kw">function</span> <span class="fn">debounce</span>(fn, delay, immediate = <span class="kw">false</span>) {
+  <span class="kw">let</span> <span class="key">timer</span>;
+  <span class="kw">return function</span>(...args) {
+    <span class="kw">const</span> <span class="key">callNow</span> = immediate && !timer;
+    <span class="fn">clearTimeout</span>(timer);
+    timer = <span class="fn">setTimeout</span>(() => {
+      timer = <span class="kw">null</span>;
+      <span class="kw">if</span> (!immediate) fn.apply(<span class="kw">this</span>, args);
+    }, delay);
+    <span class="kw">if</span> (callNow) fn.apply(<span class="kw">this</span>, args);
+  };
+}
+<span class="cm">// immediate=true: fires FIRST call, then waits</span>
+<span class="cm">// immediate=false (default): fires LAST call after quiet</span></code></pre>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Interview Q&A</div>
+    <div class="qa-item"><div class="qa-q" onclick="toggleQa(this)">Flipkart question: Implement a search that calls API only after user stops typing for 300ms <span>+</span></div>
+      <div class="qa-a">This is exactly debouncing. Create a debounce wrapper with 300ms delay. Attach to input's 'input' event. Each keystroke resets the timer. The API is called only 300ms after the last keystroke. This reduces unnecessary API calls dramatically.</div>
+    </div>
+    <div class="qa-item"><div class="qa-q" onclick="toggleQa(this)">Why do we use closure in debounce? <span>+</span></div>
+      <div class="qa-a">The <code>timer</code> variable needs to persist between calls to the returned function — that's closure. Each call needs to be able to <code>clearTimeout</code> the previous timer. The returned function closes over <code>timer</code> so all invocations share the same timer reference.</div>
+    </div>
+    <div class="qa-item"><div class="qa-q" onclick="toggleQa(this)">What's the difference between debounce and setTimeout? <span>+</span></div>
+      <div class="qa-a">A plain setTimeout always fires after the delay, every single call. Debounce intelligently cancels and resets the timer with each new call — the function only fires if there's a quiet period of at least `delay` ms.</div>
+    </div>
+  </div>
+</div>
+
+<!-- TOPIC 8: Throttling -->
+<div class="topic-page hidden" id="page-8">
+  <div class="topic-header">
+    <div class="topic-tag">// performance · rate limiting</div>
+    <h1 class="topic-title">Throttling</h1>
+    <p class="topic-subtitle">Limit function execution to at most once per time interval — regardless of call frequency.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Definition</div>
+    <div class="definition-box">
+      Throttling ensures a function executes at most once every N milliseconds. Unlike debounce, it runs the function regularly during continuous activity — just rate-limited. It's a "maximum frequency" guarantee.
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Visual timeline</div>
+    <div class="diagram">
+      <div style="font-family:var(--mono); font-size:12px; color:var(--muted); margin-bottom:8px">Scroll events firing rapidly (throttled at 200ms):</div>
+      <div class="flow" style="flex-wrap:nowrap; overflow-x:auto;">
+        <div class="flow-box highlight" style="font-size:10px">FIRE ✓</div>
+        <div class="flow-box danger" style="font-size:10px; opacity:0.4">skip</div>
+        <div class="flow-box danger" style="font-size:10px; opacity:0.4">skip</div>
+        <div class="flow-box danger" style="font-size:10px; opacity:0.4">skip</div>
+        <div style="font-size:10px; color:var(--muted); padding:4px">200ms</div>
+        <div class="flow-box highlight" style="font-size:10px">FIRE ✓</div>
+        <div class="flow-box danger" style="font-size:10px; opacity:0.4">skip</div>
+        <div class="flow-box danger" style="font-size:10px; opacity:0.4">skip</div>
+        <div style="font-size:10px; color:var(--muted); padding:4px">200ms</div>
+        <div class="flow-box highlight" style="font-size:10px">FIRE ✓</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Implementation</div>
+<pre><code><span class="kw">function</span> <span class="fn">throttle</span>(fn, limit) {
+  <span class="kw">let</span> <span class="key">lastCall</span> = <span class="num">0</span>;
+
+  <span class="kw">return function</span>(...args) {
+    <span class="kw">const</span> <span class="key">now</span> = Date.now();
+
+    <span class="kw">if</span> (now - lastCall >= limit) {
+      lastCall = now;
+      fn.apply(<span class="kw">this</span>, args);
+    }
+  };
+}
+
+<span class="cm">// Usage: handle scroll at most every 200ms</span>
+<span class="kw">const</span> <span class="key">handleScroll</span> = <span class="fn">throttle</span>(() => {
+  <span class="fn">updateScrollPosition</span>();
+}, <span class="num">200</span>);
+
+window.addEventListener(<span class="str">'scroll'</span>, handleScroll);</code></pre>
+  </div>
+
+  <div class="section">
+    <div class="section-label">setTimeout-based throttle</div>
+<pre><code><span class="kw">function</span> <span class="fn">throttle</span>(fn, limit) {
+  <span class="kw">let</span> <span class="key">inThrottle</span>;
+  <span class="kw">return function</span>(...args) {
+    <span class="kw">if</span> (!inThrottle) {
+      fn.apply(<span class="kw">this</span>, args);
+      inThrottle = <span class="kw">true</span>;
+      <span class="fn">setTimeout</span>(() => inThrottle = <span class="kw">false</span>, limit);
+    }
+  };
+}</code></pre>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Real-world use cases</div>
+    <div class="cards-grid">
+      <div class="card"><div class="card-title">Scroll events</div><p>Lazy loading, sticky headers, progress bars</p></div>
+      <div class="card"><div class="card-title">Resize events</div><p>Recalculating layout on window resize</p></div>
+      <div class="card"><div class="card-title">Mousemove</div><p>Drag-and-drop, canvas drawing, custom cursors</p></div>
+      <div class="card"><div class="card-title">Button clicks</div><p>Prevent double-submit on payment buttons</p></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Interview Q&A</div>
+    <div class="qa-item"><div class="qa-q" onclick="toggleQa(this)">Walmart interview: Implement throttle from scratch <span>+</span></div>
+      <div class="qa-a">Use a timestamp approach: store the last call time, check if enough time has elapsed. If yes, execute and update timestamp. If no, skip. This gives exactly one execution per `limit` milliseconds maximum.</div>
+    </div>
+    <div class="qa-item"><div class="qa-q" onclick="toggleQa(this)">Why use Date.now() vs setTimeout for throttle? <span>+</span></div>
+      <div class="qa-a">Date.now() approach fires immediately then rate-limits — better for continuous events like scroll. setTimeout approach has a delay on first fire — better when you want trailing execution. Both are valid; Date.now() is more commonly expected in interviews.</div>
+    </div>
+  </div>
+</div>
+
+<!-- TOPIC 9: Debounce vs Throttle -->
+<div class="topic-page hidden" id="page-9">
+  <div class="topic-header">
+    <div class="topic-tag">// comparison</div>
+    <h1 class="topic-title">Debouncing vs Throttling</h1>
+    <p class="topic-subtitle">Side-by-side comparison — when to use which pattern.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Mental model</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--accent)">Debounce</div>
+        <p>"Wait until they stop, then act." Like an elevator that waits for the last person to enter before closing doors.</p>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--accent2)">Throttle</div>
+        <p>"Act at most once per interval." Like a machine gun that fires maximum 1 bullet per second, no matter how fast you pull the trigger.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Key comparison</div>
+    <table>
+      <tr><th>Aspect</th><th>Debounce</th><th>Throttle</th></tr>
+      <tr><td>When it fires</td><td>After quiet period</td><td>At regular intervals</td></tr>
+      <tr><td>Fires during activity?</td><td>No (only after stop)</td><td>Yes (periodically)</td></tr>
+      <tr><td>Guarantees execution?</td><td>Yes (after quiet)</td><td>Yes (at max rate)</td></tr>
+      <tr><td>Best for</td><td>Search, resize, validate</td><td>Scroll, mousemove, buttons</td></tr>
+      <tr><td>Example delay</td><td>300-500ms</td><td>100-200ms</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Visual comparison — same input events</div>
+    <div class="diagram">
+      <div style="font-family:var(--mono); font-size:11px;">
+        <div style="color:var(--muted); margin-bottom:8px">Input events:  |||||||||||||||||  stop  |||||||||||  stop</div>
+        <div style="display:flex; gap:8px; margin-bottom:6px; align-items:center;">
+          <div style="color:var(--accent); min-width:80px">Debounce:</div>
+          <div style="color:#555">____________________</div>
+          <div style="color:var(--accent)">▼</div>
+          <div style="color:#555">___________</div>
+          <div style="color:var(--accent)">▼</div>
+        </div>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <div style="color:var(--accent2); min-width:80px">Throttle:</div>
+          <div style="color:var(--accent2)">▼__▼__▼__▼__▼__</div>
+          <div style="color:#555">____</div>
+          <div style="color:var(--accent2)">▼__▼__▼</div>
+          <div style="color:#555">____</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Use case guide</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--accent)">Debounce use cases</div>
+        <p>Search autocomplete, form validation, window resize recalculation, saving drafts automatically</p>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--accent2)">Throttle use cases</div>
+        <p>Scroll position tracking, infinite scroll loading, drag-and-drop, rate-limiting API buttons</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Interview Q&A</div>
+    <div class="qa-item"><div class="qa-q" onclick="toggleQa(this)">Walmart interview: What's the difference between debounce and throttle? <span>+</span></div>
+      <div class="qa-a">Debounce waits for a quiet period — fires only after N ms of no activity. Throttle fires at most once per N ms regardless. Use debounce for "wait until done" scenarios (search input). Use throttle for "limit frequency" scenarios (scroll/resize). Debounce can miss intermediate calls; throttle guarantees periodic execution.</div>
+    </div>
+    <div class="qa-item"><div class="qa-q" onclick="toggleQa(this)">Can you combine both? <span>+</span></div>
+      <div class="qa-a">Yes! Some implementations throttle with a trailing debounce — execute at regular intervals AND ensure the final call runs after activity stops. Lodash's _.debounce and _.throttle both have maxWait options for this.</div>
+    </div>
+  </div>
+</div>
+
+<!-- TOPIC 10: localStorage -->
+<div class="topic-page hidden" id="page-10">
+  <div class="topic-header">
+    <div class="topic-tag">// browser storage</div>
+    <h1 class="topic-title">Local Storage & Session Storage</h1>
+    <p class="topic-subtitle">Client-side key-value storage APIs built into the browser.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Definition</div>
+    <div class="definition-box">
+      Both are part of the Web Storage API. They store string key-value pairs in the browser. <strong>localStorage</strong> persists until explicitly cleared. <strong>sessionStorage</strong> is cleared when the browser tab closes.
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Comparison</div>
+    <table>
+      <tr><th>Property</th><th>localStorage</th><th>sessionStorage</th><th>Cookies</th></tr>
+      <tr><td>Lifetime</td><td>Until cleared</td><td>Tab/session</td><td>Expiry date</td></tr>
+      <tr><td>Capacity</td><td>~5-10 MB</td><td>~5 MB</td><td>~4 KB</td></tr>
+      <tr><td>Sent to server</td><td>No</td><td>No</td><td>Yes (HTTP header)</td></tr>
+      <tr><td>Accessible by</td><td>Same origin</td><td>Same tab</td><td>Same domain</td></tr>
+      <tr><td>JS access</td><td>Yes</td><td>Yes</td><td>Yes (if not httpOnly)</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-label">API — all methods</div>
+<pre><code><span class="cm">// localStorage and sessionStorage have identical APIs</span>
+
+<span class="cm">// Set</span>
+localStorage.setItem(<span class="str">'name'</span>, <span class="str">'Akshay'</span>);
+localStorage.<span class="key">name</span> = <span class="str">'Akshay'</span>;  <span class="cm">// also works</span>
+
+<span class="cm">// Get</span>
+localStorage.getItem(<span class="str">'name'</span>);  <span class="cm">// 'Akshay'</span>
+localStorage.<span class="key">name</span>;             <span class="cm">// 'Akshay'</span>
+
+<span class="cm">// Remove one</span>
+localStorage.removeItem(<span class="str">'name'</span>);
+
+<span class="cm">// Clear all</span>
+localStorage.clear();
+
+<span class="cm">// Number of items</span>
+localStorage.length;
+
+<span class="cm">// Storing objects — must stringify!</span>
+<span class="kw">const</span> <span class="key">user</span> = { <span class="key">name</span>: <span class="str">'Akshay'</span>, <span class="key">age</span>: <span class="num">26</span> };
+localStorage.setItem(<span class="str">'user'</span>, JSON.stringify(user));
+<span class="kw">const</span> <span class="key">stored</span> = JSON.parse(localStorage.getItem(<span class="str">'user'</span>));</code></pre>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Tricky scenarios</div>
+    <div class="tricky">
+      <div class="tricky-title">⚡ Tricky — objects stored as "[object Object]"</div>
+<pre><code>localStorage.setItem(<span class="str">'user'</span>, { <span class="key">name</span>: <span class="str">'Akshay'</span> });
+localStorage.getItem(<span class="str">'user'</span>); <span class="cm">// "[object Object]" !!!!</span>
+<span class="cm">// Always use JSON.stringify() for objects</span></code></pre>
+    </div>
+    <div class="tricky">
+      <div class="tricky-title">⚡ Tricky — storage events</div>
+<pre><code><span class="cm">// 'storage' event fires when another tab changes localStorage</span>
+window.addEventListener(<span class="str">'storage'</span>, (e) => {
+  <span class="fn">console</span>.log(e.key, e.oldValue, e.newValue);
+});
+<span class="cm">// Does NOT fire in the same tab that made the change!</span></code></pre>
+    </div>
+    <div class="tricky">
+      <div class="tricky-title">⚡ Tricky — localStorage can throw in private mode</div>
+      <p>Safari in private/incognito mode throws an error when trying to use localStorage (quota exceeded). Always wrap in try/catch in production.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Interview Q&A</div>
+    <div class="qa-item"><div class="qa-q" onclick="toggleQa(this)">What's the difference between localStorage and cookies? <span>+</span></div>
+      <div class="qa-a">Cookies are sent with every HTTP request (increasing bandwidth), have a small 4KB limit, can be httpOnly (inaccessible to JS), and can have expiry dates. localStorage is JS-only, ~5MB, never sent to server, and persists until cleared. Use cookies for auth tokens that need to reach the server; use localStorage for client-only preferences.</div>
+    </div>
+    <div class="qa-item"><div class="qa-q" onclick="toggleQa(this)">Is localStorage secure? <span>+</span></div>
+      <div class="qa-a">No — it's accessible to any JS on the same origin, making it vulnerable to XSS attacks. Never store sensitive data (passwords, auth tokens) in localStorage. Use httpOnly cookies for auth tokens — they're inaccessible to JS.</div>
+    </div>
+    <div class="qa-item"><div class="qa-q" onclick="toggleQa(this)">When would you use sessionStorage over localStorage? <span>+</span></div>
+      <div class="qa-a">When data is only relevant for the current session: form data mid-filling, current page state, temporary user preferences, multi-step wizard progress. If a tab closes, it should be gone — use sessionStorage. For persistent preferences (dark mode, language), use localStorage.</div>
+    </div>
+  </div>
+</div>
+
+<!-- TOPIC 11: Recursion -->
+<div class="topic-page hidden" id="page-11">
+  <div class="topic-header">
+    <div class="topic-tag">// algorithms · patterns</div>
+    <h1 class="topic-title">Thinking Recursively</h1>
+    <p class="topic-subtitle">Solve problems by breaking them into smaller versions of the same problem.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Definition</div>
+    <div class="definition-box">
+      Recursion is when a function calls itself. Every recursive solution needs: <br>
+      1. <strong>Base case</strong> — the stopping condition (prevents infinite loop)<br>
+      2. <strong>Recursive case</strong> — the function calls itself with a smaller/simpler input
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">The mental model: Trust the recursion</div>
+    <div class="tip">
+      <strong>Key insight:</strong> Don't trace every call. Instead, ask: "If the function works correctly for n-1, how do I use that to solve for n?" Trust that the recursive call does its job.
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Classic examples</div>
+<pre><code><span class="cm">// Factorial: n! = n * (n-1)!</span>
+<span class="kw">function</span> <span class="fn">factorial</span>(n) {
+  <span class="kw">if</span> (n <= <span class="num">1</span>) <span class="kw">return</span> <span class="num">1</span>;  <span class="cm">// base case</span>
+  <span class="kw">return</span> n * <span class="fn">factorial</span>(n - <span class="num">1</span>);  <span class="cm">// recursive case</span>
+}
+<span class="fn">factorial</span>(<span class="num">5</span>); <span class="cm">// 120</span>
+
+<span class="cm">// Fibonacci</span>
+<span class="kw">function</span> <span class="fn">fib</span>(n) {
+  <span class="kw">if</span> (n <= <span class="num">1</span>) <span class="kw">return</span> n;
+  <span class="kw">return</span> <span class="fn">fib</span>(n - <span class="num">1</span>) + <span class="fn">fib</span>(n - <span class="num">2</span>);
+}
+
+<span class="cm">// Sum of array</span>
+<span class="kw">function</span> <span class="fn">sum</span>(arr) {
+  <span class="kw">if</span> (arr.length === <span class="num">0</span>) <span class="kw">return</span> <span class="num">0</span>;  <span class="cm">// base</span>
+  <span class="kw">return</span> arr[<span class="num">0</span>] + <span class="fn">sum</span>(arr.slice(<span class="num">1</span>));  <span class="cm">// recursive</span>
+}</code></pre>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Real-world: flatten nested array</div>
+<pre><code><span class="kw">function</span> <span class="fn">flatten</span>(arr) {
+  <span class="kw">return</span> arr.reduce((flat, item) => {
+    <span class="kw">return</span> flat.concat(
+      Array.isArray(item) ? <span class="fn">flatten</span>(item) : item
+    );
+  }, []);
+}
+
+<span class="fn">flatten</span>([<span class="num">1</span>, [<span class="num">2</span>, [<span class="num">3</span>, [<span class="num">4</span>]]], <span class="num">5</span>]); <span class="cm">// [1,2,3,4,5]</span></code></pre>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Deep clone object recursively</div>
+<pre><code><span class="kw">function</span> <span class="fn">deepClone</span>(obj) {
+  <span class="kw">if</span> (obj === <span class="kw">null</span> || <span class="kw">typeof</span> obj !== <span class="str">'object'</span>) <span class="kw">return</span> obj;
+  <span class="kw">if</span> (Array.isArray(obj)) <span class="kw">return</span> obj.map(<span class="fn">deepClone</span>);
+
+  <span class="kw">return</span> Object.fromEntries(
+    Object.entries(obj).map(([k, v]) => [k, <span class="fn">deepClone</span>(v)])
+  );
+}
+
+<span class="fn">deepClone</span>({ <span class="key">a</span>: <span class="num">1</span>, <span class="key">b</span>: { <span class="key">c</span>: [<span class="num">2</span>, <span class="num">3</span>] } });
+<span class="cm">// { a: 1, b: { c: [2, 3] } } — fully independent copy</span></code></pre>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Tricky scenarios</div>
+    <div class="tricky">
+      <div class="tricky-title">⚡ Tricky — stack overflow</div>
+<pre><code><span class="cm">// Without base case → infinite recursion → RangeError!</span>
+<span class="kw">function</span> <span class="fn">bad</span>(n) { <span class="kw">return</span> <span class="fn">bad</span>(n - <span class="num">1</span>); }  <span class="cm">// 💥 stack overflow</span>
+
+<span class="cm">// Fix: always check base case first!</span></code></pre>
+    </div>
+    <div class="tricky">
+      <div class="tricky-title">⚡ Tricky — Fibonacci exponential time without memoization</div>
+<pre><code><span class="cm">// fib(50) without memo = 2^50 calls! Use memoization:</span>
+<span class="kw">const</span> <span class="key">memo</span> = {};
+<span class="kw">function</span> <span class="fn">fib</span>(n) {
+  <span class="kw">if</span> (n <= <span class="num">1</span>) <span class="kw">return</span> n;
+  <span class="kw">if</span> (memo[n]) <span class="kw">return</span> memo[n];
+  <span class="kw">return</span> memo[n] = <span class="fn">fib</span>(n-<span class="num">1</span>) + <span class="fn">fib</span>(n-<span class="num">2</span>);
+}</code></pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Interview Q&A</div>
+    <div class="qa-item"><div class="qa-q" onclick="toggleQa(this)">Microsoft interview: Flatten a deeply nested object <span>+</span></div>
+      <div class="qa-a">Use recursion with a prefix to track path. For each key-value pair: if the value is an object, recurse with key as prefix. If primitive, add to result with full dot-notation key. Example: {a: {b: 1}} → {'a.b': 1}.</div>
+    </div>
+    <div class="qa-item"><div class="qa-q" onclick="toggleQa(this)">When should you use recursion vs iteration? <span>+</span></div>
+      <div class="qa-a">Recursion: naturally hierarchical problems (trees, nested structures, divide-and-conquer). Iteration: flat, sequential, performance-critical. Recursion can cause stack overflow on deep inputs; iteration is generally more memory-efficient. When recursion is cleaner but deep, use iteration with an explicit stack.</div>
+    </div>
+    <div class="qa-item"><div class="qa-q" onclick="toggleQa(this)">What is tail call optimization? <span>+</span></div>
+      <div class="qa-a">When the recursive call is the last operation in a function (tail position), some engines can reuse the stack frame instead of adding a new one — preventing stack overflow. JS engines support this in strict mode theoretically, but V8 removed it. For true tail-call safety in JS, convert to iteration or use trampolining.</div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+function show(idx) {
+  document.querySelectorAll('.topic-page').forEach((p, i) => {
+    p.classList.toggle('hidden', i !== idx);
+  });
+  document.querySelectorAll('.topic-btn').forEach((b, i) => {
+    b.classList.toggle('active', i === idx);
+  });
+  document.getElementById('main').scrollTop = 0;
+}
+
+function toggleQa(el) {
+  const ans = el.nextElementSibling;
+  ans.classList.toggle('show');
+  el.classList.toggle('open');
+}
+</script>
+</body>
+</html>
